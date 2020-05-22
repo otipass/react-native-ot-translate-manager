@@ -102,3 +102,11 @@ dist
 
 # TernJS port file
 .tern-port
+
+dummy.csv
+
+.babelrc
+
+package-lock.json
+
+*.lock
