@@ -1,18 +1,17 @@
-const fs = require('fs')
-const deepAssign = require('deep-assign');
-const reactNative = require('react-native')
+import deepAssign from 'deep-assign'
+import { AsyncStorage } from 'react-native'
 
 class Translate {
 
 
     async getCurrentLanguage() {
-        return await reactNative.AsyncStorage.getItem("language")
+        return await AsyncStorage.getItem("language")
     }
 
     async updateLanguage(language) {
         if(typeof this.configuration[language] == "object") {
             this.language = language
-            await await reactNative.AsyncStorage.setItem("language", language)
+            await await AsyncStorage.setItem("language", language)
             return true
         } else {
             throw "Erreur dans Translate: updateLanguage() => langue '"+language+"' inconnue en configuration"
@@ -20,23 +19,23 @@ class Translate {
     }
 
 
-    async setup(configuration,path,defaultLanguage) {
+    async setup(translateConfiguration,translateContent,defaultLanguage) {
 
-        this.configuration = configuration
+        this.configuration = translateConfiguration
 
         /* Definie targetUppercase */
         this.targetUppercase = new Array()
         
         /* Get last language in the memory */
-        let language = await reactNative.AsyncStorage.getItem("language")
+        let language = await AsyncStorage.getItem("language")
         if(language == undefined) {
             language = defaultLanguage
-            await reactNative.AsyncStorage.setItem("language", language)
+            await AsyncStorage.setItem("language", language)
         }
         this.language = language
 
         /* Parse csv file */
-        let file = fs.readFileSync(path).toString().split('\n')
+        let file = translateContent.split('\n')
         let keys = file.shift().replace(/\r/g, '').split(';')
         let translateArr = new Array()
         file.map(element => {
@@ -86,10 +85,7 @@ class Translate {
         } else {
             phrase = key[this.defaultLanguage]
         }
-        if(phrase == undefined) {
-            console.log(KEY)
-            return KEY
-        }
+        
         for (let objKey in ob) {
             phrase = phrase.replace("%"+objKey+"%", ob[objKey])
         }
@@ -107,4 +103,4 @@ class Translate {
 
 const translate = new Translate()
 
-module.exports = translate
+export default translate
