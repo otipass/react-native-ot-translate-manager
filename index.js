@@ -3,13 +3,15 @@ import { AsyncStorage } from 'react-native'
 
 class Translate {
 
+    constructor() {
+        this.isSetup = false
+    }
 
     async getCurrentLanguage() {
         return await AsyncStorage.getItem("language")
     }
 
     async updateLanguage(language) {
-        console.log(this.configuration)
         if(this.configuration[language]) {
             this.language = language.toUpperCase()
             await await AsyncStorage.setItem("language", language)
@@ -64,6 +66,7 @@ class Translate {
             delete itemArr.KEY
             deepAssign(this.key,build(line,itemArr))
         })
+        this.isSetup = true
     }
 
 
@@ -80,6 +83,12 @@ class Translate {
 
 
     get(key, ob = {}) {
+        if(this.isSetup == false) {
+            return "MODULE_IS_NOT_SETUP"
+        }
+        if(key == undefined) {
+            return "KEY_UNDEFINED"
+        }
         let phrase = ""
         if(key[this.language]) {
             phrase = key[this.language]

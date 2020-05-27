@@ -1,6 +1,6 @@
 {
   "name": "react-native-ot-translate-manager",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Manage your translate file",
   "main": "index.js",
   "scripts": {
