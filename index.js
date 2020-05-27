@@ -9,8 +9,9 @@ class Translate {
     }
 
     async updateLanguage(language) {
-        if(typeof this.configuration[language] == "object") {
-            this.language = language
+        console.log(this.configuration)
+        if(this.configuration[language]) {
+            this.language = language.toUpperCase()
             await await AsyncStorage.setItem("language", language)
             return true
         } else {
@@ -29,10 +30,10 @@ class Translate {
         /* Get last language in the memory */
         let language = await AsyncStorage.getItem("language")
         if(language == undefined) {
-            language = defaultLanguage
+            language = defaultLanguage.toUpperCase()
             await AsyncStorage.setItem("language", language)
         }
-        this.language = language
+        this.language = language.toUpperCase()
 
         /* Parse csv file */
         let file = translateContent.split('\n')
@@ -85,7 +86,9 @@ class Translate {
         } else {
             phrase = key[this.defaultLanguage]
         }
-        
+        if(phrase == undefined) {
+            return
+        }
         for (let objKey in ob) {
             phrase = phrase.replace("%"+objKey+"%", ob[objKey])
         }
@@ -94,9 +97,7 @@ class Translate {
                 phrase = phrase.slice(0,uppercase) + phrase[uppercase].toUpperCase() + phrase.slice(uppercase+1,phrase.length)
             }
         })
-
         this.targetUppercase = new Array()
-
         return phrase
     }
 }
