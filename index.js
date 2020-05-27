@@ -13,7 +13,7 @@ class Translate {
 
     async updateLanguage(language) {
         if(this.configuration[language]) {
-            this.language = language.toUpperCase()
+            this.language = language.toLowerCase()
             await await AsyncStorage.setItem("language", language)
             return true
         } else {
@@ -32,10 +32,10 @@ class Translate {
         /* Get last language in the memory */
         let language = await AsyncStorage.getItem("language")
         if(language == undefined) {
-            language = defaultLanguage.toUpperCase()
+            language = defaultLanguage.toLowerCase()
             await AsyncStorage.setItem("language", language)
         }
-        this.language = language.toUpperCase()
+        this.language = language.toLowerCase()
 
         /* Parse csv file */
         let file = translateContent.split('\n')
