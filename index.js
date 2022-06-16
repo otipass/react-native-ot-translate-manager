@@ -1,5 +1,5 @@
 import deepAssign from 'deep-assign'
-import { AsyncStorage } from "@react-native-async-storage/async-storage"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 class Translate {
 
