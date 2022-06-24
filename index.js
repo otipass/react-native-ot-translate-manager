@@ -22,8 +22,7 @@ class Translate {
     }
 
 
-    async setup(translateConfiguration,translateContent,defaultLanguage) {
-
+    async setup(translateConfiguration,translateContent,defaultLanguage,customContent = "") {
         this.configuration = translateConfiguration
 
         /* Definie targetUppercase */
@@ -38,17 +37,8 @@ class Translate {
         this.language = language.toLowerCase()
 
         /* Parse csv file */
-        let file = translateContent.split('\n')
-        let keys = file.shift().replace(/\r/g, '').split(';')
-        let translateArr = new Array()
-        file.map(element => {
-            let temp = element.replace(/\r/g, '').split(';')
-            let tempObj = {}
-            keys.forEach((key,index) => {
-                tempObj[key] = temp[index]
-            })
-            translateArr.push(tempObj)
-        })
+        translateArr = this.parseAndBuildCSV(translateContent)
+        translateArrCustom = this.parseAndBuildCSV(customContent)
         /* Build dynamics objects */
         let build = (line,data) => {
             let image = {}
@@ -60,7 +50,14 @@ class Translate {
             return image
         }
         this.key = {}
+        
         translateArr.forEach(itemArr => {
+            let key = itemArr.KEY
+            let line = key.split('.')
+            delete itemArr.KEY
+            deepAssign(this.key,build(line,itemArr))
+        })
+        translateArrCustom.forEach(itemArr => {
             let key = itemArr.KEY
             let line = key.split('.')
             delete itemArr.KEY
@@ -69,6 +66,23 @@ class Translate {
         this.isSetup = true
     }
 
+    parseAndBuildCSV(content) {
+        if(typeof content != "string") {
+            content = ""
+        }
+        let file = content.split('\n')
+        let keys = file.shift().replace(/\r/g, '').split(';')
+        let translateArr = new Array()
+        file.map(element => {
+            let temp = element.replace(/\r/g, '').split(';')
+            let tempObj = {}
+            keys.forEach((key,index) => {
+                tempObj[key] = temp[index]
+            })
+            translateArr.push(tempObj)
+        })
+        return translateArr
+    }
 
     toUppercase(dist) {
         if(Array.isArray(dist)) {
